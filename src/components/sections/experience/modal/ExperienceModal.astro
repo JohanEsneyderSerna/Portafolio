@@ -1,7 +1,525 @@
 ---
-import Modal from "@modal/Modal.astro";
+import { getCVData } from "@utils/cv";
+
+const cvData = await getCVData();
+const { work, projects = [] } = cvData;
+
+// Extraer los nombres de las empresas de las experiencias laborales
+const companyNames = work.map(exp => exp.name.split(" - ")[0]);
+
+// Agrupar experiencias laborales por empresa
+const groupedWork = {};
+work.forEach(exp => {
+  const companyName = exp.name.split(" - ")[0];
+  if (!groupedWork[companyName]) {
+    groupedWork[companyName] = [];
+  }
+  groupedWork[companyName].push(exp);
+});
+
+// Agrupar proyectos por empresa
+const groupedProjects = {};
+projects?.forEach(project => {
+  let matchedCompany = "";
+  for (const companyName of companyNames) {
+    if (project.company === companyName || 
+        project.company.includes(companyName) || 
+        companyName.includes(project.company)) {
+      matchedCompany = companyName;
+      break;
+    }
+  }
+  
+  if (!matchedCompany) {
+    matchedCompany = project.company;
+  }
+  
+  if (!groupedProjects[matchedCompany]) {
+    groupedProjects[matchedCompany] = [];
+  }
+  
+  groupedProjects[matchedCompany].push(project);
+});
 ---
 
-<Modal id="experience-modal" title="Experiencia Laboral">
-  <!-- El contenido del modal será populado dinámicamente con JavaScript -->
-</Modal> 
+<div id="experience-modal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="left-controls">
+        <button class="nav-arrow prev-company" aria-label="Empresa anterior">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <h2 id="modal-company-title">Experiencia Laboral</h2>
+      <div class="right-controls">
+        <button class="nav-arrow next-company" aria-label="Siguiente empresa">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="close-modal" aria-label="Cerrar modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="experience-modal-content">
+        <div class="tab-container">
+          <div class="tab-header">
+            <div class="tab-buttons">
+              <button class="tab-button active" data-tab="experience">
+                <i class="fas fa-briefcase"></i>
+                <span>Experiencia</span>
+              </button>
+              <button class="tab-button" data-tab="projects">
+                <i class="fas fa-code"></i>
+                <span>Proyectos</span>
+              </button>
+            </div>
+          </div>
+          <div class="tab-content">
+            <div class="tab-pane active" id="experience-tab">
+              <div class="experiences-container">
+                <!-- El contenido se cargará dinámicamente -->
+              </div>
+            </div>
+            <div class="tab-pane" id="projects-tab">
+              <div class="projects-container">
+                <!-- El contenido se cargará dinámicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="close-modal-button">
+        Cerrar
+      </button>
+    </div>
+    
+    <!-- Botón para volver arriba -->
+    <button class="scroll-to-top-btn" aria-label="Volver al inicio del modal">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ groupedWork, groupedProjects }}>
+  let currentCompanyIndex = 0;
+  let companiesList = [];
+
+  // Función para actualizar el contenido del modal
+  function updateExperienceModal(companyName) {
+    const modalTitle = document.getElementById('modal-company-title');
+    const experiencesContainer = document.querySelector('#experience-tab .experiences-container');
+    const projectsContainer = document.querySelector('#projects-tab .projects-container');
+    
+    if (!modalTitle || !experiencesContainer || !projectsContainer) {
+      console.error('Elementos del modal no encontrados');
+      return false;
+    }
+    
+    // Actualizar título del modal
+    const experiences = groupedWork[companyName] || [];
+    const projects = groupedProjects[companyName] || [];
+    
+    if (experiences.length > 0) {
+      const firstExperience = experiences[0];
+      const companyUrl = firstExperience.url;
+      
+      if (companyUrl) {
+        modalTitle.innerHTML = `
+          ${companyName}
+          <a href="${companyUrl}" target="_blank" class="company-link" title="Visitar sitio web de ${companyName}">
+            <i class="fas fa-external-link-alt"></i>
+          </a>
+        `;
+      } else {
+        modalTitle.textContent = companyName;
+      }
+    } else {
+      modalTitle.textContent = companyName;
+    }
+    
+    // Actualizar contenido de experiencias
+    if (experiences.length > 0) {
+      experiencesContainer.innerHTML = `
+        <div class="experiences-accordion">
+          ${experiences.map(exp => {
+            const startYear = new Date(exp.startDate).getFullYear();
+            const endYear = exp.endDate 
+              ? new Date(exp.endDate).getFullYear() 
+              : "Actual";
+            
+            return `
+              <div class="accordion-item">
+                <button class="accordion-header" aria-expanded="false">
+                  <div class="position-info">
+                    <h3>${exp.position}</h3>
+                    <div class="year-badge">
+                      <i class="fas fa-calendar-alt"></i>
+                      <time>${startYear} - ${endYear}</time>
+                    </div>
+                  </div>
+                  <div class="accordion-icon-wrapper">
+                    <span class="accordion-icon">▼</span>
+                  </div>
+                </button>
+                <div class="accordion-content" aria-hidden="true">
+                  <div class="experience-content">
+                    <div class="summary-card">
+                      <p>${exp.summary}</p>
+                    </div>
+                    <div class="highlights-card">
+                      <h4>Logros y Responsabilidades</h4>
+                      <ul>
+                        ${exp.highlights.map(highlight => `
+                          <li>
+                            <span class="bullet">•</span>
+                            <span>${highlight}</span>
+                          </li>
+                        `).join('')}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } else {
+      experiencesContainer.innerHTML = `
+        <div class="no-experience">
+          <p>No hay experiencias disponibles para esta empresa.</p>
+        </div>
+      `;
+    }
+    
+    // Actualizar contenido de proyectos
+    if (projects.length > 0) {
+      projectsContainer.innerHTML = `
+        <div class="projects-grid">
+          ${projects.map(project => {
+            return `
+            <div class="project-card">
+              <div class="project-header">
+                <h3>
+                  ${project.url ? `
+                    <a href="${project.url}" target="_blank" title="Ver proyecto ${project.name}">
+                      ${project.name}
+                    </a>
+                  ` : `
+                    ${project.name}
+                  `}
+                </h3>
+                ${project.startYear ? `
+                  <div class="year-badge">
+                    <i class="fas fa-calendar-alt"></i>
+                    <time>${project.startYear} - ${project.endYear || "Actual"}</time>
+                  </div>
+                ` : ''}
+              </div>
+              ${project.client ? `
+                <div class="project-client">
+                  <span class="client-label">Cliente:</span>
+                  <span class="client-value">${project.client}</span>
+                </div>
+              ` : ''}
+              <p>${project.description || ''}</p>
+              <div class="project-tags">
+                ${project.highlights.map(tag => `
+                  <span class="project-tag">
+                    <span class="tag-text">${tag}</span>
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          `;
+          }).join('')}
+        </div>
+      `;
+    } else {
+      projectsContainer.innerHTML = `
+        <div class="no-projects">
+          <p>No hay proyectos disponibles para esta empresa.</p>
+        </div>
+      `;
+    }
+    
+    // Inicializar acordeones y pestañas
+    initAccordions(experiencesContainer);
+    initTabs();
+    
+    return true;
+  }
+
+  // Función para navegar entre empresas
+  function navigateCompanies(direction) {
+    if (companiesList.length === 0) return;
+    
+    if (direction === 'next') {
+      currentCompanyIndex = (currentCompanyIndex + 1) % companiesList.length;
+    } else {
+      currentCompanyIndex = (currentCompanyIndex - 1 + companiesList.length) % companiesList.length;
+    }
+    
+    const company = companiesList[currentCompanyIndex];
+    if (company) {
+      updateExperienceModal(company);
+    }
+  }
+
+  // Función para inicializar acordeones
+  function initAccordions(container) {
+    const accordionHeaders = container.querySelectorAll('.accordion-header');
+    
+    accordionHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('.accordion-icon');
+        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+        
+        // Cerrar todos los demás acordeones
+        accordionHeaders.forEach(otherHeader => {
+          if (otherHeader !== header) {
+            otherHeader.setAttribute('aria-expanded', 'false');
+            otherHeader.nextElementSibling.setAttribute('aria-hidden', 'true');
+            otherHeader.querySelector('.accordion-icon').style.transform = 'rotate(0deg)';
+          }
+        });
+        
+        // Toggle del acordeón actual
+        header.setAttribute('aria-expanded', !isExpanded);
+        content.setAttribute('aria-hidden', isExpanded);
+        icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+      });
+    });
+  }
+
+  // Función para inicializar pestañas
+  function initTabs() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.getAttribute('data-tab');
+        
+        // Remover clases activas
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabPanes.forEach(pane => pane.classList.remove('active'));
+        
+        // Agregar clases activas
+        button.classList.add('active');
+        const targetPane = document.getElementById(`${tabId}-tab`);
+        if (targetPane) {
+          targetPane.classList.add('active');
+        }
+      });
+    });
+  }
+
+  // Función para abrir el modal de experiencia
+  window.openExperienceModal = function(companyName) {
+    const modal = document.getElementById('experience-modal');
+    if (!modal) {
+      console.error('Modal no encontrado');
+      return;
+    }
+    
+    // Encontrar el índice de la empresa actual
+    currentCompanyIndex = companiesList.findIndex(company => company === companyName);
+    if (currentCompanyIndex === -1) currentCompanyIndex = 0;
+    
+    // Actualizar el modal
+    const success = updateExperienceModal(companyName);
+    if (!success) {
+      console.error('No se pudo actualizar el modal');
+      return;
+    }
+    
+    // Mostrar el modal
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Inicializar el modal
+  function initExperienceModal() {
+    const modal = document.getElementById('experience-modal');
+    if (!modal) return;
+
+    const closeBtn = modal.querySelector('.close-modal');
+    const closeModalBtn = modal.querySelector('.close-modal-button');
+    const prevBtn = modal.querySelector('.prev-company');
+    const nextBtn = modal.querySelector('.next-company');
+    const scrollTopBtn = modal.querySelector('.scroll-to-top-btn');
+    const modalContent = modal.querySelector('.modal-content');
+    
+    if (!closeBtn || !modalContent) return;
+
+    // Obtener lista de empresas
+    const companyCards = Array.from(document.querySelectorAll('.company-card'));
+    companiesList = companyCards.map(card => {
+      return card.getAttribute('data-company') || '';
+    }).filter(company => company);
+
+    // Agregar event listeners para las tarjetas de empresas
+    companyCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const companyName = card.getAttribute('data-company');
+        if (companyName && typeof window.openExperienceModal === 'function') {
+          window.openExperienceModal(companyName);
+        }
+      });
+    });
+
+    // Función para cerrar el modal
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      
+      if (modalContent) {
+        modalContent.scrollTop = 0;
+      }
+    }
+
+    // Event listeners para cerrar modal
+    closeBtn.addEventListener('click', closeModal);
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener('click', closeModal);
+    }
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Event listeners para navegación
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => navigateCompanies('prev'));
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => navigateCompanies('next'));
+    }
+
+    // Keyboard navigation
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        navigateCompanies('prev');
+      } else if (e.key === 'ArrowRight') {
+        navigateCompanies('next');
+      } else if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // Scroll to top button
+    if (scrollTopBtn && modalContent) {
+      modalContent.addEventListener('scroll', () => {
+        if (modalContent.scrollTop > 200) {
+          scrollTopBtn.classList.add('visible');
+        } else {
+          scrollTopBtn.classList.remove('visible');
+        }
+      });
+
+      scrollTopBtn.addEventListener('click', () => {
+        modalContent.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+  }
+
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    initExperienceModal();
+  });
+</script>
+
+<style>
+  @import '@modal/styles/modal.css';
+  @import '@modal/styles/modal-tabs.css';
+
+  .experience-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0;
+  }
+
+  .experiences-container {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .projects-container {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .no-experience,
+  .no-projects {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+  }
+
+  .company-link {
+    color: var(--primary);
+    text-decoration: none;
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .company-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Ajustar el header de tabs para que no se superponga */
+  .tab-header {
+    position: sticky;
+    top: 0;
+    background: var(--background, #ffffff);
+    z-index: 4;
+    border-bottom: 1px solid var(--border, #e5e5e5);
+    margin-top: 0;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Asegurar que el contenido tenga espacio suficiente */
+  .tab-content {
+    flex: 1;
+    width: 100%;
+    margin-top: 1rem;
+    background: var(--background, #ffffff);
+    overflow-y: auto;
+  }
+
+  .tab-pane {
+    display: none;
+    width: 100%;
+    padding-top: 1rem;
+  }
+
+  .tab-pane.active {
+    display: block;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @media (max-width: 768px) {
+    .experience-modal-content {
+      gap: 0.5rem;
+    }
+    
+    .experiences-container,
+    .projects-container {
+      padding: 0.75rem;
+      margin-top: 0.75rem;
+    }
+  }
+</style> 
