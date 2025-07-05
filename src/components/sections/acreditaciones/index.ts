@@ -1,0 +1,1 @@
+export { default as AcreditacionesSection } from './AcreditacionesSection.astro'; 

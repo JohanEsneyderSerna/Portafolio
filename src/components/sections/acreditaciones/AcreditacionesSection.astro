@@ -1,0 +1,33 @@
+---
+import { Section } from "@sections/index";
+import { Accordion } from "@accordion/index";
+import { getCVData } from "@utils/cv";
+import AcreditacionCard from "@sections/acreditaciones/card/AcreditacionCard.astro";
+import AcreditacionModal from "@modal/acreditaciones/AcreditacionModal.astro";
+
+const cvData = await getCVData();
+const { acreditation } = cvData;
+---
+
+<Section>
+  <Accordion title="Acreditaciones" icon="fas fa-award">
+    <div class="cards-grid acreditaciones-grid">
+      {
+        acreditation.map((acreditacion) => (
+          <AcreditacionCard
+            name={acreditacion.name}
+            issuer={acreditacion.issuer}
+            date={acreditacion.date}
+            url={acreditacion.url}
+          />
+        ))
+      }
+    </div>
+  </Accordion>
+</Section>
+
+<AcreditacionModal />
+
+<style>
+  @import '@card/styles/cards.css';
+</style> 

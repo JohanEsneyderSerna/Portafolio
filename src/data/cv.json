@@ -176,6 +176,20 @@
       "url":"https://cloud.kaspersky.com/?landing=true"
     }
   ],
+  "acreditation":[
+    {
+      "name":"Acreditación Windows Server 2025",
+      "date":"2024-02-22",
+      "issuer":"Expert Zone",
+      "url":"https://expertzone.microsoft.com/"
+    },
+    {
+      "name":"Acreditación Windows 11 Pro",
+      "date":"2024-03-10",
+      "issuer":"Expert Zone",
+      "url":"https://expertzone.microsoft.com/"
+    }
+  ],
   "skills":[
     {
       "name":"Implementaciones",

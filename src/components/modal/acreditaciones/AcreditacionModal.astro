@@ -1,0 +1,333 @@
+---
+import { getCVData } from "@utils/cv";
+
+const cvData = await getCVData();
+const { acreditation } = cvData;
+
+// Mapeo de acreditaciones usando rutas directas desde public/
+const acreditacionUrls = {
+  'Acreditación-Windows-Server-2025': '/me/acreditaciones/acreditación-Windows-Server-2025.pdf',
+  'Acreditación-Windows-11-Pro': '/me/acreditaciones/acreditación-Windows-11-Pro.pdf'
+};
+
+// Mapeo de información de acreditaciones
+const acreditacionInfo = {
+  'Acreditación-Windows-Server-2025': {
+    issuer: 'Expert Zone',
+    date: '2024-02-22'
+  },
+  'Acreditación-Windows-11-Pro': {
+    issuer: 'Expert Zone',
+    date: '2024-03-10'
+  }
+};
+---
+
+<div id="acreditacion-modal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="left-controls">
+        <button class="nav-arrow prev-acreditacion" aria-label="Acreditación anterior">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <h2 id="modal-acreditacion-title">Acreditación</h2>
+      <div class="right-controls">
+        <button class="nav-arrow next-acreditacion" aria-label="Siguiente acreditación">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="close-modal" aria-label="Cerrar modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="acreditacion-modal-content">
+        <div class="acreditacion-info">
+          <h3 id="modal-acreditacion-name"></h3>
+          <p id="modal-acreditacion-issuer"></p>
+          <p id="modal-acreditacion-date"></p>
+        </div>
+        <div class="acreditacion-viewer">
+          <iframe id="acreditacion-iframe" src="" frameborder="0"></iframe>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="close-modal-button">
+        Cerrar
+      </button>
+    </div>
+    
+    <!-- Botón para volver arriba -->
+    <button class="scroll-to-top-btn" aria-label="Volver al inicio del modal">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ acreditacionUrls, acreditacionInfo }}>
+  // Variables globales
+  let currentAcreditacionIndex = 0;
+  let acreditacionesList = [];
+
+  // Función para actualizar el contenido del modal
+  function updateAcreditacionModal(acreditacionName) {
+    const modalTitle = document.getElementById('modal-acreditacion-title');
+    const modalName = document.getElementById('modal-acreditacion-name');
+    const modalIssuer = document.getElementById('modal-acreditacion-issuer');
+    const modalDate = document.getElementById('modal-acreditacion-date');
+    const iframe = document.getElementById('acreditacion-iframe');
+    
+    if (!modalTitle || !modalName || !modalIssuer || !modalDate || !iframe) {
+      console.error('Elementos del modal no encontrados');
+      return false;
+    }
+    
+    // Actualizar información de la acreditación
+    modalTitle.textContent = 'Acreditación';
+    modalName.textContent = acreditacionName;
+    
+    const info = acreditacionInfo[acreditacionName];
+    if (info) {
+      modalIssuer.textContent = `Emitido por: ${info.issuer}`;
+      const date = new Date(info.date);
+      modalDate.textContent = `Fecha: ${date.toLocaleDateString('es-ES')}`;
+    } else {
+      modalIssuer.textContent = `Emitido por: Expert Zone`;
+      modalDate.textContent = `Fecha: ${new Date().toLocaleDateString('es-ES')}`;
+    }
+    
+    // Configurar el iframe
+    const acreditacionPath = acreditacionUrls[acreditacionName];
+    if (acreditacionPath) {
+      iframe.src = acreditacionPath;
+      return true;
+    } else {
+      console.error('Ruta de la acreditación no encontrada:', acreditacionName);
+      return false;
+    }
+  }
+
+  // Función para abrir el modal
+  function openAcreditacionModal(acreditacionName, acreditacionUrl) {
+    const modal = document.getElementById('acreditacion-modal');
+    if (!modal) {
+      console.error('Modal no encontrado');
+      return;
+    }
+    
+    // Encontrar el índice de la acreditación actual
+    currentAcreditacionIndex = acreditacionesList.findIndex(acred => acred.name === acreditacionName);
+    if (currentAcreditacionIndex === -1) currentAcreditacionIndex = 0;
+    
+    // Actualizar el modal
+    const success = updateAcreditacionModal(acreditacionName);
+    if (!success) {
+      console.error('No se pudo actualizar el modal');
+      return;
+    }
+    
+    // Mostrar el modal
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Función para cerrar el modal
+  function closeModal() {
+    const modal = document.getElementById('acreditacion-modal');
+    if (!modal) return;
+    
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    const modalContent = modal.querySelector('.modal-content');
+    if (modalContent) {
+      modalContent.scrollTop = 0;
+    }
+  }
+
+  // Función para navegar entre acreditaciones
+  function navigateAcreditaciones(direction) {
+    if (acreditacionesList.length === 0) return;
+    
+    if (direction === 'next') {
+      currentAcreditacionIndex = (currentAcreditacionIndex + 1) % acreditacionesList.length;
+    } else {
+      currentAcreditacionIndex = (currentAcreditacionIndex - 1 + acreditacionesList.length) % acreditacionesList.length;
+    }
+    
+    const acreditacion = acreditacionesList[currentAcreditacionIndex];
+    if (acreditacion) {
+      updateAcreditacionModal(acreditacion.name);
+    }
+  }
+
+  // Inicializar el modal
+  function initAcreditacionModal() {
+    const modal = document.getElementById('acreditacion-modal');
+    if (!modal) return;
+
+    const closeBtn = modal.querySelector('.close-modal');
+    const closeModalBtn = modal.querySelector('.close-modal-button');
+    const prevBtn = modal.querySelector('.prev-acreditacion');
+    const nextBtn = modal.querySelector('.next-acreditacion');
+    const scrollTopBtn = modal.querySelector('.scroll-to-top-btn');
+    const modalContent = modal.querySelector('.modal-content');
+    
+    if (!closeBtn || !modalContent) return;
+
+    // Obtener lista de acreditaciones
+    const acreditacionCards = Array.from(document.querySelectorAll('.acreditacion-card'));
+    acreditacionesList = acreditacionCards.map(card => {
+      const name = card.querySelector('h3')?.textContent?.trim() || '';
+      return { name, element: card };
+    });
+    
+
+    // Agregar event listeners para las tarjetas de acreditaciones
+    acreditacionCards.forEach(card => {
+      card.addEventListener('click', () => {
+        // Obtener el nombre de la acreditación desde el h3 dentro de la tarjeta
+        const acreditacionNameElement = card.querySelector('h3');
+        const acreditacionName = acreditacionNameElement ? acreditacionNameElement.textContent?.trim() : '';
+        const acreditacionUrl = card.getAttribute('data-acreditacion-url');
+        
+        if (acreditacionName && typeof window.openAcreditacionModal === 'function') {
+          window.openAcreditacionModal(acreditacionName, acreditacionUrl);
+        } else {
+          console.error('Función openAcreditacionModal no disponible o nombre de acreditación no encontrado');
+        }
+      });
+    });
+
+    // Event listeners para cerrar modal
+    closeBtn.addEventListener('click', closeModal);
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener('click', closeModal);
+    }
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Event listeners para navegación
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => navigateAcreditaciones('prev'));
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => navigateAcreditaciones('next'));
+    }
+
+    // Keyboard navigation
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        navigateAcreditaciones('prev');
+      } else if (e.key === 'ArrowRight') {
+        navigateAcreditaciones('next');
+      } else if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // Scroll to top button
+    if (scrollTopBtn && modalContent) {
+      modalContent.addEventListener('scroll', () => {
+        if (modalContent.scrollTop > 200) {
+          scrollTopBtn.classList.add('visible');
+        } else {
+          scrollTopBtn.classList.remove('visible');
+        }
+      });
+
+      scrollTopBtn.addEventListener('click', () => {
+        modalContent.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+  }
+
+  // Hacer la función disponible globalmente
+  window.openAcreditacionModal = openAcreditacionModal;
+
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    initAcreditacionModal();
+  });
+</script>
+
+<style>
+  @import '@modal/styles/modal.css';
+
+  .acreditacion-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+
+  .acreditacion-info {
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+
+  .acreditacion-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .acreditacion-info p {
+    margin: 0 0 0.25rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .acreditacion-viewer {
+    flex: 1;
+    min-height: 400px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #acreditacion-iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    .acreditacion-modal-content {
+      gap: 0.5rem;
+    }
+    
+    .acreditacion-info {
+      padding: 0.75rem;
+    }
+    
+    .acreditacion-info h3 {
+      font-size: 1rem;
+    }
+    
+    .acreditacion-info p {
+      font-size: 0.8rem;
+    }
+    
+    #acreditacion-iframe {
+      min-height: 300px;
+    }
+  }
+</style> 

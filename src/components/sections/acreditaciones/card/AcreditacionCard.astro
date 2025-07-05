@@ -1,0 +1,65 @@
+---
+import { CompactYearBadge } from '@yearBadge/index';
+
+interface Props {
+  name: string;
+  issuer: string;
+  date: string;
+  url: string;
+}
+
+const { name, issuer, date, url } = Astro.props;
+const acreditacionDate = new Date(date);
+const year = acreditacionDate.getFullYear();
+const month = acreditacionDate.toLocaleDateString('es-ES', { month: 'short' });
+
+// Escapar las comillas simples en el nombre para el onclick
+const escapedName = name.replace(/'/g, "\\'");
+---
+
+<div class="card acreditacion-card" data-acreditacion-name="{name}" data-acreditacion-url="{url}">
+  <div class="card-content acreditacion-card-content">
+    <div class="card-header acreditacion-header">
+      <h3>{name}</h3>
+      <CompactYearBadge startYear={year} endYear={year} showIcon={true} />
+    </div>
+    <p class="card-description acreditacion-issuer">
+      <i class="fas fa-award"></i> {issuer}
+    </p>
+    <p class="acreditacion-date">
+      <i class="fas fa-calendar-alt"></i> {month} {year}
+    </p>
+    <div class="card-indicator acreditacion-indicator">
+      <i class="fas fa-eye"></i>
+      <span>Ver acreditación</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  @import '@card/styles/cards.css';
+
+  .acreditacion-issuer {
+    margin: 0 0 0.25rem 0;
+    color: var(--secondary);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .acreditacion-date {
+    margin: 0 0 0.5rem 0;
+    color: var(--secondary);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .acreditacion-issuer i,
+  .acreditacion-date i {
+    color: var(--primary);
+    font-size: 0.9rem;
+  }
+</style> 

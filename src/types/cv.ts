@@ -5,6 +5,7 @@ export interface CV {
   education: Array<Education>
   awards: Array<Awards>
   certificates: Array<Certificates>
+  acreditation: Array<Acreditation>
   publications: Array<Publications>
   skills: Array<Skills>
   languages: Array<Languages>
@@ -79,6 +80,13 @@ export interface Awards {
 }
 
 export interface Certificates {
+  name: string
+  date: string
+  issuer: string
+  url: string
+}
+
+export interface Acreditation {
   name: string
   date: string
   issuer: string
