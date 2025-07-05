@@ -9,18 +9,18 @@
   --background: #e4eaf0; /* Azul muy claro */
   --text: #2d3748; /* Gris azulado oscuro */
   --secondary: #718096; /* Gris medio */
-  --primary: #4a5568; /* Gris azulado */
+  --primary: #00008B; /* Azul marino */
   --border: #a9bbcd; /* Gris azulado medio - más visible */
-  --border-color: #4a5568; /* Gris azulado */
+  --border-color: #00008B; /* Azul marino */
   --card-bg: #ffffff; /* Blanco */
   --bg-secondary: #edf2f7; /* Gris azulado muy claro */
   --bg-hover: #e2e8f0; /* Gris claro */
-  --accent: #4a5568; /* Gris azulado */
+  --accent: #00008B; /* Azul marino */
   --card-border: #cbd5e0; /* Gris azulado medio - más visible */
   --shadow: rgba(0, 0, 0, 0.08); /* Sombra ligeramente más visible */
   --text-color: #2d3748; /* Gris azulado oscuro */
   --text-secondary: #718096; /* Gris medio */
-  --primary-dark: #2d3748; /* Gris azulado más oscuro */
+  --primary-dark: #000066; /* Azul marino más oscuro */
   --text-on-dark: #f7fafc; /* Blanco suave */
 }
 
@@ -29,18 +29,18 @@
   --background: #1a1a1a;
   --text: #e0e0e0;
   --secondary: #a0a0a0;
-  --primary: #2563eb;
+  --primary: #00008B;
   --border: #333333;
-  --border-color: #2563eb;
+  --border-color: #00008B;
   --card-bg: #2a2a2a;
   --bg-secondary: #333333;
   --bg-hover: #353535;
-  --accent: #2563eb;
+  --accent: #00008B;
   --card-border: #374151;
   --shadow: rgba(0, 0, 0, 0.3);
   --text-color: #e0e0e0;
   --text-secondary: #b0b0b0;
-  --primary-dark: #1d4ed8;
+  --primary-dark: #000066;
   --text-on-dark: #e8e8e8;
 }
 
