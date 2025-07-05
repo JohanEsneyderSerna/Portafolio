@@ -1,0 +1,349 @@
+---
+import { getCVData } from "@utils/cv";
+
+const cvData = await getCVData();
+const { certificates } = cvData;
+
+// Mapeo de certificados usando rutas directas desde public/
+const certificateUrls = {
+  'Certified Professional: Kaspersky Endpoint Security Cloud (040.16)': '/me/certificates/kaspersky-endpoint-security-cloud-040-16.pdf',
+  'Certified Professional: Kaspersky EDR Optimum Presales (P24.2)': '/me/certificates/kaspersky-edr-optimum-presales-p24-2.pdf',
+  'Certified Professional: Kaspersky Next EDR Foundations (046.12.5)': '/me/certificates/kaspersky-next-edr-foundations-046-12-5.pdf',
+  'Certified Professional Kaspersky Next Presales (P19.01)': '/me/certificates/kaspersky-next-presales-p19-01.pdf',
+  'Certified Professional Kaspersky Next XDR Expert (048.1.1)': '/me/certificates/kaspersky-next-xdr-expert-048-1-1.pdf'
+};
+
+// Mapeo de información de certificados
+const certificateInfo = {
+  'Certified Professional: Kaspersky Endpoint Security Cloud (040.16)': {
+    issuer: 'Kaspersky',
+    date: '2024-02-15'
+  },
+  'Certified Professional: Kaspersky EDR Optimum Presales (P24.2)': {
+    issuer: 'Kaspersky',
+    date: '2024-03-15'
+  },
+  'Certified Professional: Kaspersky Next EDR Foundations (046.12.5)': {
+    issuer: 'Scrum.org',
+    date: '2021-08-22'
+  },
+  'Certified Professional Kaspersky Next Presales (P19.01)': {
+    issuer: 'Kaspersky',
+    date: '2024-04-15'
+  },
+  'Certified Professional Kaspersky Next XDR Expert (048.1.1)': {
+    issuer: 'Kaspersky',
+    date: '2024-05-15'
+  }
+};
+---
+
+<div id="certificate-modal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="left-controls">
+        <button class="nav-arrow prev-certificate" aria-label="Certificado anterior">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <h2 id="modal-certificate-title">Certificado</h2>
+      <div class="right-controls">
+        <button class="nav-arrow next-certificate" aria-label="Siguiente certificado">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="close-modal" aria-label="Cerrar modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="certificate-modal-content">
+        <div class="certificate-info">
+          <h3 id="modal-certificate-name"></h3>
+          <p id="modal-certificate-issuer"></p>
+          <p id="modal-certificate-date"></p>
+        </div>
+        <div class="certificate-viewer">
+          <iframe id="certificate-iframe" src="" frameborder="0"></iframe>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="close-modal-button">
+        Cerrar
+      </button>
+    </div>
+    
+    <!-- Botón para volver arriba -->
+    <button class="scroll-to-top-btn" aria-label="Volver al inicio del modal">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ certificateUrls, certificateInfo }}>
+  // Variables globales
+  let currentCertificateIndex = 0;
+  let certificatesList = [];
+
+  // Función para actualizar el contenido del modal
+  function updateCertificateModal(certificateName) {
+    const modalTitle = document.getElementById('modal-certificate-title');
+    const modalName = document.getElementById('modal-certificate-name');
+    const modalIssuer = document.getElementById('modal-certificate-issuer');
+    const modalDate = document.getElementById('modal-certificate-date');
+    const iframe = document.getElementById('certificate-iframe');
+    
+    if (!modalTitle || !modalName || !modalIssuer || !modalDate || !iframe) {
+      console.error('Elementos del modal no encontrados');
+      return false;
+    }
+    
+    // Actualizar información del certificado
+    modalTitle.textContent = 'Certificado';
+    modalName.textContent = certificateName;
+    
+    const info = certificateInfo[certificateName];
+    if (info) {
+      modalIssuer.textContent = `Emitido por: ${info.issuer}`;
+      const date = new Date(info.date);
+      modalDate.textContent = `Fecha: ${date.toLocaleDateString('es-ES')}`;
+    } else {
+      modalIssuer.textContent = `Emitido por: ${certificateName.includes('Kaspersky') ? 'Kaspersky' : 'Scrum.org'}`;
+      modalDate.textContent = `Fecha: ${new Date().toLocaleDateString('es-ES')}`;
+    }
+    
+    // Configurar el iframe
+    const certificatePath = certificateUrls[certificateName];
+    if (certificatePath) {
+      iframe.src = certificatePath;
+      return true;
+    } else {
+      console.error('Ruta del certificado no encontrada:', certificateName);
+      return false;
+    }
+  }
+
+  // Función para abrir el modal
+  function openCertificateModal(certificateName, certificateUrl) {
+    const modal = document.getElementById('certificate-modal');
+    if (!modal) {
+      console.error('Modal no encontrado');
+      return;
+    }
+    
+    // Encontrar el índice del certificado actual
+    currentCertificateIndex = certificatesList.findIndex(cert => cert.name === certificateName);
+    if (currentCertificateIndex === -1) currentCertificateIndex = 0;
+    
+    // Actualizar el modal
+    const success = updateCertificateModal(certificateName);
+    if (!success) {
+      console.error('No se pudo actualizar el modal');
+      return;
+    }
+    
+    // Mostrar el modal
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Función para cerrar el modal
+  function closeModal() {
+    const modal = document.getElementById('certificate-modal');
+    if (!modal) return;
+    
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    const modalContent = modal.querySelector('.modal-content');
+    if (modalContent) {
+      modalContent.scrollTop = 0;
+    }
+  }
+
+  // Función para navegar entre certificados
+  function navigateCertificates(direction) {
+    if (certificatesList.length === 0) return;
+    
+    if (direction === 'next') {
+      currentCertificateIndex = (currentCertificateIndex + 1) % certificatesList.length;
+    } else {
+      currentCertificateIndex = (currentCertificateIndex - 1 + certificatesList.length) % certificatesList.length;
+    }
+    
+    const certificate = certificatesList[currentCertificateIndex];
+    if (certificate) {
+      updateCertificateModal(certificate.name);
+    }
+  }
+
+  // Inicializar el modal
+  function initCertificateModal() {
+    const modal = document.getElementById('certificate-modal');
+    if (!modal) return;
+
+    const closeBtn = modal.querySelector('.close-modal');
+    const closeModalBtn = modal.querySelector('.close-modal-button');
+    const prevBtn = modal.querySelector('.prev-certificate');
+    const nextBtn = modal.querySelector('.next-certificate');
+    const scrollTopBtn = modal.querySelector('.scroll-to-top-btn');
+    const modalContent = modal.querySelector('.modal-content');
+    
+    if (!closeBtn || !modalContent) return;
+
+    // Obtener lista de certificados
+    const certificateCards = Array.from(document.querySelectorAll('.certificate-card'));
+    certificatesList = certificateCards.map(card => {
+      const name = card.querySelector('h3')?.textContent?.trim() || '';
+      return { name, element: card };
+    });
+    
+
+
+    // Agregar event listeners para las tarjetas de certificados
+    certificateCards.forEach(card => {
+      card.addEventListener('click', () => {
+        // Obtener el nombre del certificado desde el h3 dentro de la tarjeta
+        const certificateNameElement = card.querySelector('h3');
+        const certificateName = certificateNameElement ? certificateNameElement.textContent?.trim() : '';
+        const certificateUrl = card.getAttribute('data-certificate-url');
+        
+        if (certificateName && typeof window.openCertificateModal === 'function') {
+          window.openCertificateModal(certificateName, certificateUrl);
+        } else {
+          console.error('Función openCertificateModal no disponible o nombre de certificado no encontrado');
+        }
+      });
+    });
+
+    // Event listeners para cerrar modal
+    closeBtn.addEventListener('click', closeModal);
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener('click', closeModal);
+    }
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Event listeners para navegación
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => navigateCertificates('prev'));
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => navigateCertificates('next'));
+    }
+
+    // Keyboard navigation
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        navigateCertificates('prev');
+      } else if (e.key === 'ArrowRight') {
+        navigateCertificates('next');
+      } else if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // Scroll to top button
+    if (scrollTopBtn && modalContent) {
+      modalContent.addEventListener('scroll', () => {
+        if (modalContent.scrollTop > 200) {
+          scrollTopBtn.classList.add('visible');
+        } else {
+          scrollTopBtn.classList.remove('visible');
+        }
+      });
+
+      scrollTopBtn.addEventListener('click', () => {
+        modalContent.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+  }
+
+  // Hacer la función disponible globalmente
+  window.openCertificateModal = openCertificateModal;
+
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    initCertificateModal();
+  });
+</script>
+
+<style>
+  @import '@modal/styles/modal.css';
+
+  .certificate-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+
+  .certificate-info {
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+
+  .certificate-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .certificate-info p {
+    margin: 0 0 0.25rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .certificate-viewer {
+    flex: 1;
+    min-height: 400px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #certificate-iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    .certificate-modal-content {
+      gap: 0.5rem;
+    }
+    
+    .certificate-info {
+      padding: 0.75rem;
+    }
+    
+    .certificate-info h3 {
+      font-size: 1rem;
+    }
+    
+    .certificate-info p {
+      font-size: 0.8rem;
+    }
+    
+    #certificate-iframe {
+      min-height: 300px;
+    }
+  }
+</style> 

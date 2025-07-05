@@ -1,0 +1,33 @@
+---
+import { Section } from "@sections/index";
+import { Accordion } from "@accordion/index";
+import { getCVData } from "@utils/cv";
+import CertificateCard from "@sections/certificates/card/CertificateCard.astro";
+import CertificateModal from "@modal/certificates/CertificateModal.astro";
+
+const cvData = await getCVData();
+const { certificates } = cvData;
+---
+
+<Section>
+  <Accordion title="Certificaciones" icon="fas fa-certificate">
+    <div class="cards-grid certificates-grid">
+      {
+        certificates.map((certificate) => (
+          <CertificateCard
+            name={certificate.name}
+            issuer={certificate.issuer}
+            date={certificate.date}
+            url={certificate.url}
+          />
+        ))
+      }
+    </div>
+  </Accordion>
+</Section>
+
+<CertificateModal />
+
+<style>
+  @import '@card/styles/cards.css';
+</style> 

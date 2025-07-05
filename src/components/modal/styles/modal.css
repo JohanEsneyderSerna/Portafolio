@@ -43,13 +43,13 @@
   width: 90%;
   max-width: 1000px;
   max-height: 90vh;
-  overflow-y: auto;
   position: relative;
   padding: 0;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border, #e5e5e5);
+  overflow: hidden;
 }
 
 .modal-header {
@@ -63,6 +63,7 @@
   top: 0;
   z-index: 5;
   box-shadow: none;
+  flex-shrink: 0;
 }
 
 .left-controls, .right-controls {
@@ -164,12 +165,13 @@
 .modal-body {
   color: var(--text-color);
   padding: 0 2rem 1.5rem;
-  overflow-y: visible;
+  overflow-y: auto;
   flex: 1;
   position: relative;
   z-index: 0;
   margin-top: 1.25rem;
   background: var(--background, #ffffff);
+  min-height: 0;
 }
 
 .modal-footer {
@@ -177,6 +179,7 @@
   justify-content: center;
   padding: 1.5rem 2rem 2rem;
   background: var(--background, #ffffff);
+  flex-shrink: 0;
 }
 
 .close-modal-button {

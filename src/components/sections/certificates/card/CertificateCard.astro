@@ -1,0 +1,65 @@
+---
+import { CompactYearBadge } from '@yearBadge/index';
+
+interface Props {
+  name: string;
+  issuer: string;
+  date: string;
+  url: string;
+}
+
+const { name, issuer, date, url } = Astro.props;
+const certificateDate = new Date(date);
+const year = certificateDate.getFullYear();
+const month = certificateDate.toLocaleDateString('es-ES', { month: 'short' });
+
+// Escapar las comillas simples en el nombre para el onclick
+const escapedName = name.replace(/'/g, "\\'");
+---
+
+<div class="card certificate-card" data-certificate-name="{name}" data-certificate-url="{url}">
+  <div class="card-content certificate-card-content">
+    <div class="card-header certificate-header">
+      <h3>{name}</h3>
+      <CompactYearBadge startYear={year} endYear={year} showIcon={true} />
+    </div>
+    <p class="card-description certificate-issuer">
+      <i class="fas fa-shield-alt"></i> {issuer}
+    </p>
+    <p class="certificate-date">
+      <i class="fas fa-calendar-alt"></i> {month} {year}
+    </p>
+    <div class="card-indicator certificate-indicator">
+      <i class="fas fa-eye"></i>
+      <span>Ver certificado</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  @import '@card/styles/cards.css';
+
+  .certificate-issuer {
+    margin: 0 0 0.25rem 0;
+    color: var(--secondary);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .certificate-date {
+    margin: 0 0 0.5rem 0;
+    color: var(--secondary);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .certificate-issuer i,
+  .certificate-date i {
+    color: var(--primary);
+    font-size: 0.9rem;
+  }
+</style> 

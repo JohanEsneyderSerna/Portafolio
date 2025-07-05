@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-import { EducationSection, ExperienceSection, SkillsSection, LanguagesSection } from "@sections/index";
+import { EducationSection, ExperienceSection, SkillsSection, LanguagesSection, CertificatesSection } from "@sections/index";
 import { ScrollToTopButton, FloatingButtons } from "@buttons/index";
 import TimelineNav from "../components/TimelineNav.astro";
 import About from "@sections/About.astro";
@@ -18,6 +18,7 @@ const sections = [
   { id: "sobre-mi", title: "Perfil", icon: "fas fa-id-card" },
   { id: "experiencia", title: "Experiencia", icon: "fas fa-briefcase" },
   { id: "educacion", title: "Educación", icon: "fas fa-graduation-cap" },
+  { id: "certificaciones", title: "Certificaciones", icon: "fas fa-certificate" },
   { id: "idiomas", title: "Idiomas", icon: "fas fa-language" },
   { id: "habilidades", title: "Habilidades", icon: "fas fa-tools" }
 ];
@@ -37,6 +38,9 @@ const sections = [
     </section>
     <section id="educacion">
       <EducationSection />
+    </section>
+    <section id="certificaciones">
+      <CertificatesSection />
     </section>
     <section id="idiomas">
       <LanguagesSection />
