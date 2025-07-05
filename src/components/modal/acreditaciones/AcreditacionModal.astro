@@ -6,17 +6,17 @@ const { acreditation } = cvData;
 
 // Mapeo de acreditaciones usando rutas directas desde public/
 const acreditacionUrls = {
-  'Acreditación-Windows-Server-2025': '/me/acreditaciones/acreditación-Windows-Server-2025.pdf',
-  'Acreditación-Windows-11-Pro': '/me/acreditaciones/acreditación-Windows-11-Pro.pdf'
+  'Acreditacion-Windows-Server-2025': '/me/public/acreditaciones/acreditación-Windows-Server-2025.pdf',
+  'Acreditacion-Windows-11-Pro': '/me/public/acreditaciones/acreditación-Windows-11-Pro.pdf'
 };
 
 // Mapeo de información de acreditaciones
 const acreditacionInfo = {
-  'Acreditación-Windows-Server-2025': {
+  'Acreditacion-Windows-Server-2025': {
     issuer: 'Expert Zone',
     date: '2024-02-22'
   },
-  'Acreditación-Windows-11-Pro': {
+  'Acreditacion-Windows-11-Pro': {
     issuer: 'Expert Zone',
     date: '2024-03-10'
   }
@@ -71,6 +71,23 @@ const acreditacionInfo = {
   let currentAcreditacionIndex = 0;
   let acreditacionesList = [];
 
+  function normalizeAcreditacionName(name) {
+    return name
+      .replace(/ /g, '-')
+      .replace(/á/g, 'a')
+      .replace(/é/g, 'e')
+      .replace(/í/g, 'i')
+      .replace(/ó/g, 'o')
+      .replace(/ú/g, 'u')
+      .replace(/Á/g, 'A')
+      .replace(/É/g, 'E')
+      .replace(/Í/g, 'I')
+      .replace(/Ó/g, 'O')
+      .replace(/Ú/g, 'U')
+      .replace(/ñ/g, 'n')
+      .replace(/Ñ/g, 'N');
+  }
+
   // Función para actualizar el contenido del modal
   function updateAcreditacionModal(acreditacionName) {
     const modalTitle = document.getElementById('modal-acreditacion-title');
@@ -88,7 +105,8 @@ const acreditacionInfo = {
     modalTitle.textContent = 'Acreditación';
     modalName.textContent = acreditacionName;
     
-    const info = acreditacionInfo[acreditacionName];
+    const normalized = normalizeAcreditacionName(acreditacionName);
+    const info = acreditacionInfo[normalized];
     if (info) {
       modalIssuer.textContent = `Emitido por: ${info.issuer}`;
       const date = new Date(info.date);
@@ -99,7 +117,7 @@ const acreditacionInfo = {
     }
     
     // Configurar el iframe
-    const acreditacionPath = acreditacionUrls[acreditacionName];
+    const acreditacionPath = acreditacionUrls[normalized];
     if (acreditacionPath) {
       iframe.src = acreditacionPath;
       return true;
