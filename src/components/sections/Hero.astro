@@ -1,0 +1,452 @@
+---
+import { getCVData } from "@utils/cv"
+import { Section } from "@sections/index";
+
+const cvData = await getCVData()
+const { name, label, image, location, profiles, phone, email } = cvData.basics
+const { city, department, region } = location
+
+const linkedInfo = profiles.find(({ network }) => network === "LinkedIn")
+const linkedUrl = linkedInfo?.url
+const githubInfo = profiles.find(({ network }) => network === "GitHub")
+const githubUrl = githubInfo?.url
+
+const printInfo = [email, phone, linkedUrl].filter(Boolean).join(" • ")
+---
+
+<Section>
+  <div class="container">
+    <div class="top-section">
+      <figure>
+        <img src={image} alt={name} />
+      </figure>
+      <div class="name-section">
+        <div class="name-logo">
+          <h1>{name}</h1>
+          <img src="/me/logo.svg" alt="Logo JL" class="logo" />
+        </div>
+        <h2>{label}</h2>
+      </div>
+    </div>
+    <footer class="print">
+      {printInfo}
+    </footer>
+  </div>
+</Section>
+
+<Section title="<i class='fas fa-address-card'></i> Contacto">
+  <div class="contact-info">
+    {
+      email && (
+        <div class="contact-item">
+          <a
+            href={`mailto:${email}`}
+            title={`Enviar un correo electrónico a ${name} al correo ${email}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="icon-link"
+          >
+            <i class="fas fa-envelope"></i>
+          </a>
+          <div class="contact-value-container">
+            <a href={`mailto:${email}`} class="contact-value" target="_blank" rel="noopener noreferrer">
+              {email}
+            </a>
+            <button class="copy-button" onclick={`copyToClipboard('${email}')`} title="Copiar email">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      )
+    }
+    {
+      phone && (
+        <div class="contact-item">
+          <a
+            href={`tel:${phone}`}
+            title={`Llamar por teléfono a ${name} al número ${phone}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="icon-link"
+          >
+            <i class="fas fa-phone"></i>
+          </a>
+          <div class="contact-value-container">
+            <a href={`tel:${phone}`} class="contact-value" target="_blank" rel="noopener noreferrer">
+              {phone}
+            </a>
+            <button class="copy-button" onclick={`copyToClipboard('${phone}')`} title="Copiar teléfono">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      )
+    }
+    <div class="contact-item">
+      <a
+        href="https://www.google.com/maps?q=6.299806,-75.535111"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Ver ubicación en Google Maps"
+        class="icon-link"
+      >
+        <i class="fas fa-map-marker-alt"></i>
+      </a>
+      <div class="contact-value-container">
+        <a href="https://www.google.com/maps?q=6.299806,-75.535111" class="contact-value" target="_blank" rel="noopener noreferrer">
+          {city}, {department}, {region}
+        </a>
+        <button class="copy-button" onclick={`copyToClipboard('https://www.google.com/maps?q=6.299806,-75.535111')`} title="Copiar ubicación">
+          <i class="fas fa-copy"></i>
+        </button>
+      </div>
+    </div>
+    {
+      linkedUrl && (
+        <div class="contact-item">
+          <a
+            href={linkedUrl}
+            title={`Visitar el perfil de ${name} en LinkedIn`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="icon-link"
+          >
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <div class="contact-value-container">
+            <a href={linkedUrl} class="contact-value" target="_blank" rel="noopener noreferrer">
+              {linkedUrl}
+            </a>
+            <button class="copy-button" onclick={`copyToClipboard('${linkedUrl}')`} title="Copiar perfil de LinkedIn">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      )
+    }
+    {
+      githubUrl && (
+        <div class="contact-item">
+          <a
+            href={githubUrl}
+            title={`Visitar el perfil de ${name} en GitHub`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="icon-link"
+          >
+            <i class="fab fa-github"></i>
+          </a>
+          <div class="contact-value-container">
+            <a href={githubUrl} class="contact-value" target="_blank" rel="noopener noreferrer">
+              {githubUrl}
+            </a>
+            <button class="copy-button" onclick={`copyToClipboard('${githubUrl}')`} title="Copiar perfil de GitHub">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</Section>
+
+<style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .top-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .name-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  h2 {
+    color: var(--secondary);
+    font-weight: 500;
+    font-size: 1.1rem;
+    text-wrap: balance;
+  }
+
+  img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    width: 150px;
+    height: 150px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    image-rendering: auto;
+    -webkit-backface-visibility: hidden;
+  }
+
+  span {
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    letter-spacing: -0.05rem;
+  }
+
+  footer {
+    color: var(--secondary);
+    font-size: 0.65rem;
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  footer.no-print {
+    width: 100%;
+  }
+
+  footer a {
+    color: var(--secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    padding: 4px;
+    height: 32px;
+    width: 32px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  footer a.contact-link {
+    flex-direction: column;
+    height: auto;
+    width: auto;
+    min-width: 120px;
+    padding: 8px;
+    gap: 4px;
+  }
+
+  footer a.contact-link .icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  footer a.contact-link span {
+    font-size: 0.75rem;
+    text-align: center;
+    word-break: break-all;
+  }
+
+  footer a:hover {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+  }
+
+  .location-link {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+  }
+
+  .location-link:hover {
+    color: var(--primary);
+  }
+
+  .location-link span {
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    letter-spacing: -0.05rem;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 0 1rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .icon-link {
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    height: 32px;
+    width: 32px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .icon-link:hover, .icon-link:focus {
+    color: var(--primary);
+  }
+
+  .contact-value-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .contact-value {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+  }
+
+  .copy-button {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+  }
+
+  .copy-button:hover, .copy-button:focus {
+    opacity: 1;
+    color: var(--primary);
+  }
+
+  .contact-value:hover, .contact-value:focus {
+    color: var(--primary);
+  }
+
+  .name-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s ease;
+  }
+
+  .logo:hover {
+    transform: scale(1.1);
+  }
+
+  @media (width <= 700px) {
+    .top-section {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+    }
+
+    .name-section {
+      align-items: center;
+    }
+
+    figure {
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-info {
+      align-items: flex-start;
+      width: 100%;
+      padding: 0 0.5rem;
+    }
+
+    .contact-item {
+      width: 100%;
+      padding: 4px 0;
+    }
+
+    .contact-value-container {
+      gap: 12px;
+    }
+
+    .contact-value {
+      font-size: 0.9rem;
+    }
+
+    .copy-button {
+      width: 36px;
+      height: 36px;
+    }
+
+    .name-logo {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .logo {
+      width: 32px;
+      height: 32px;
+    }
+  }
+</style>
+
+<script>
+  declare global {
+    interface Window {
+      copyToClipboard: (text: string) => void;
+    }
+  }
+
+  function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        const notify = document.createElement('div');
+        notify.className = 'notification';
+        notify.textContent = '¡Copiado al portapapeles!';
+        document.body.appendChild(notify);
+        
+        setTimeout(() => {
+          notify.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          notify.classList.remove('show');
+          setTimeout(() => {
+            document.body.removeChild(notify);
+          }, 300);
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('Error al copiar: ', err);
+      });
+  }
+  
+  // Exponer la función al ámbito global para que pueda ser accedida desde los atributos onclick
+  window.copyToClipboard = copyToClipboard;
+</script>

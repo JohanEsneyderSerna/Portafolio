@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <metadata>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+             xmlns:dc="http://www.purl.org/dc/elements/1.1/"
+             xmlns:cc="http://creativecommons.org/ns#">
+      <cc:Work rdf:about="">
+        <dc:title>JS Tech Consultant Logo</dc:title>
+        <dc:creator>Johan Esneider Serna</dc:creator>
+        <dc:rights>Copyright © 2024 Johan Esneider Serna. All rights reserved.</dc:rights>
+        <dc:date>2024</dc:date>
+        <cc:license>Private use only - All rights reserved</cc:license>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+
+  <!-- Fondo con gradiente moderno -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2540;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E3A8A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00B4D8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0077B6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="128" fill="url(#bgGradient)"/>
+  
+  <!-- Letra "J" estilizada que representa tu nombre -->
+  <path d="M 180 140 
+           L 180 320
+           Q 180 360, 220 360
+           L 280 360
+           Q 320 360, 320 320
+           L 320 280"
+        stroke="url(#accentGradient)"
+        stroke-width="48"
+        stroke-linecap="round"
+        fill="none"/>
+  
+  <!-- Círculo que representa un servidor/nodo de red -->
+  <circle cx="320" cy="180" r="24" fill="url(#accentGradient)"/>
+  
+  <!-- Elementos adicionales que representan tecnología -->
+  <!-- Líneas de conexión -->
+  <line x1="140" y1="200" x2="180" y2="200" stroke="url(#accentGradient)" stroke-width="8" opacity="0.6"/>
+  <line x1="320" y1="240" x2="360" y2="240" stroke="url(#accentGradient)" stroke-width="8" opacity="0.6"/>
+  
+  <!-- Puntos de conexión que representan clientes -->
+  <circle cx="140" cy="200" r="8" fill="url(#accentGradient)" opacity="0.8"/>
+  <circle cx="360" cy="240" r="8" fill="url(#accentGradient)" opacity="0.8"/>
+  
+  <!-- Elemento de seguridad (escudo sutil) -->
+  <g transform="translate(400, 400)">
+    <path d="M -20 -15 L 0 -25 L 20 -15 L 20 10 L 0 20 L -20 10 Z" 
+          fill="none" stroke="url(#accentGradient)" stroke-width="4" opacity="0.7"/>
+  </g>
+  
+  <!-- Texto de copyright actualizado -->
+  <text x="50%" y="50%" font-size="8" fill="url(#accentGradient)" fill-opacity="0.1" text-anchor="middle">
+    © 2024 Johan Esneider Serna
+  </text>
+</svg>

@@ -1,0 +1,1 @@
+export { default as CardInit } from "./scripts/card";

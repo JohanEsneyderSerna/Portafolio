@@ -1,0 +1,93 @@
+---
+import ExperienceModal from "@sections/experience/modal/ExperienceModal.astro";
+import { Section } from "@sections/index";
+import { Accordion } from "@accordion/index";
+import { getCVData } from "@utils/cv";
+import CompanyCard from "@sections/experience/company/card/CompanyCard.astro";
+
+const cvData = await getCVData();
+const { work, projects = [] } = cvData;
+
+// Extraer los nombres de las empresas de las experiencias laborales
+const companyNames = work.map(exp => exp.name.split(" - ")[0]);
+
+// Agrupar experiencias laborales por empresa
+const groupedWork = {};
+work.forEach(exp => {
+  const companyName = exp.name.split(" - ")[0];
+  if (!groupedWork[companyName]) {
+    groupedWork[companyName] = [];
+  }
+  groupedWork[companyName].push(exp);
+});
+
+// Agrupar proyectos por empresa
+// Asegurarnos de que usamos exactamente los mismos nombres de empresa que en las experiencias
+const groupedProjects = {};
+projects?.forEach(project => {
+  // Encontrar la empresa que más coincide con el campo company del proyecto
+  let matchedCompany = "";
+  for (const companyName of companyNames) {
+    if (project.company === companyName || 
+        project.company.includes(companyName) || 
+        companyName.includes(project.company)) {
+      matchedCompany = companyName;
+      break;
+    }
+  }
+  
+  // Si no hay coincidencia, usar el valor original
+  if (!matchedCompany) {
+    matchedCompany = project.company;
+  }
+  
+  if (!groupedProjects[matchedCompany]) {
+    groupedProjects[matchedCompany] = [];
+  }
+  
+  groupedProjects[matchedCompany].push(project);
+});
+
+---
+
+<Section>
+  <Accordion title="Experiencia laboral" icon="fas fa-briefcase" initiallyExpanded={true}>
+    <div class="companies-grid">
+      {
+        Object.entries(groupedWork).map(([company, experiences]) => {
+          const typedExperiences = experiences as typeof work;
+          const firstExperience = typedExperiences[0];
+          const lastExperience = typedExperiences[typedExperiences.length - 1];
+          const startYear = new Date(firstExperience.startDate).getFullYear();
+          const endYear = lastExperience.endDate
+            ? new Date(lastExperience.endDate).getFullYear()
+            : undefined;
+
+          return (
+            <CompanyCard
+              company={company}
+              startYear={startYear}
+              endYear={endYear}
+            />
+          );
+        })
+      }
+    </div>
+  </Accordion>
+</Section>
+
+<ExperienceModal />
+
+<div
+  id="grouped-work-data"
+  data-work={JSON.stringify(groupedWork)}
+  style="display: none;"
+>
+</div>
+<div
+  id="grouped-projects-data"
+  data-projects={JSON.stringify(groupedProjects)}
+  style="display: none;"
+>
+</div>
+

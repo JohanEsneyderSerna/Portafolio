@@ -1,0 +1,66 @@
+<button id="scrollToTop" class="scroll-to-top" aria-label="Volver arriba">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<style>
+  .scroll-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    color: var(--text-secondary);
+    z-index: 101;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .scroll-to-top:hover {
+    transform: translateY(-3px);
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (max-width: 768px) {
+    .scroll-to-top {
+      bottom: calc(2rem + 80px);
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>
+
+<script>
+  const scrollToTop = document.getElementById('scrollToTop');
+  const scrollThreshold = 300; // Aparece después de 300px de scroll
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > scrollThreshold) {
+      scrollToTop?.classList.add('visible');
+    } else {
+      scrollToTop?.classList.remove('visible');
+    }
+  });
+
+  scrollToTop?.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+</script> 

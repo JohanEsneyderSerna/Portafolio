@@ -1,0 +1,88 @@
+---
+interface Props {
+  name: string;
+  iconHtml: string;
+  keywords: string[];
+  skillIcons: Record<string, string>;
+}
+
+const { name, iconHtml, keywords, skillIcons } = Astro.props;
+---
+
+<div class="card skill-card">
+  <div class="card-content">
+    <div class="card-header skill-header">
+      <div class="skill-icon">
+        <div set:html={iconHtml} />
+      </div>
+      <div class="skill-info">
+        <h3>{name}</h3>
+      </div>
+    </div>
+    <div class="skill-keywords">
+      {keywords.map(keyword => {
+        const keywordIcon = skillIcons[keyword] || `<i class="fas fa-circle"></i>`;
+        return (
+          <span class="keyword-tag">
+            <span class="keyword-icon" set:html={keywordIcon} />
+            <span class="keyword-text">{keyword}</span>
+          </span>
+        )
+      })}
+    </div>
+  </div>
+</div>
+
+<style>
+  @import '@card/styles/cards.css';
+  
+  .skill-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary);
+  }
+  
+  .skill-info {
+    flex: 1;
+  }
+  
+  .skill-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 0.75rem;
+  }
+  
+  .keyword-tag {
+    background: var(--background);
+    color: var(--secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .keyword-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    color: var(--secondary);
+    min-width: 14px;
+  }
+  
+  .keyword-text {
+    flex: 1;
+  }
+  
+  .keyword-tag:hover {
+    background: var(--bg-hover);
+    transform: translateY(-1px);
+  }
+</style> 

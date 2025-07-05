@@ -1,0 +1,128 @@
+---
+import { getInitialTheme } from '../components/theme/script/theme';
+import '../components/modal/styles/modal-tabs.css';
+import { ClientInit } from '@client/index';
+import { getCVData } from "@utils/cv"
+import '@globalStyles/global.css';
+
+interface Props {
+  title: string
+}
+
+const { title } = Astro.props
+const cvData = await getCVData()
+const { image, summary } = cvData.basics
+const initialTheme = getInitialTheme();
+---
+
+<!doctype html>
+<html lang="es" class={initialTheme}>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{title}</title>
+    <meta name="description" content={summary} />
+    <meta name="viewport" content="width=device-width" />
+    
+    <!-- Favicon y logos -->
+    <link rel="icon" type="image/x-icon" href="/me/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/me/logo.svg" />
+    <link rel="apple-touch-icon" href="/me/logo.svg" />
+    <link rel="mask-icon" href="/me/logo.svg" color="#0A2540" />
+    <meta name="theme-color" content="#0A2540" />
+    <meta name="msapplication-TileColor" content="#0A2540" />
+    <meta property="og:image" content="/me/logo.svg" />
+    
+    <link rel="preload" as="image" href={image} />
+    <link rel="preload" as="image" href="/me/logo.svg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </head>
+  <body>
+    <main class="mt-16 px-4 sm:px-6 lg:px-8">
+      <slot />
+    </main>
+    <ClientInit />
+  </body>
+</html>
+
+<style is:global>
+  html {
+    font-family:
+      Menlo,
+      Monaco,
+      Lucida Console,
+      "Courier New",
+      Courier,
+      monospace;
+    letter-spacing: -0.025rem;
+  }
+
+  body,
+  figure {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      "Open Sans",
+      "Helvetica Neue",
+      sans-serif;
+  }
+
+  p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .print {
+    display: none !important;
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    .print {
+      display: block !important;
+    }
+
+    astro-dev-toolbar {
+      display: none !important;
+    }
+
+    article {
+      break-inside: avoid;
+    }
+  }
+</style>

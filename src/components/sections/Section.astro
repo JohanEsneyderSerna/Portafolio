@@ -1,0 +1,44 @@
+---
+interface Props {
+  title?: string | any;
+}
+
+const { title } = Astro.props;
+---
+
+<section>
+  {title && <h2 set:html={typeof title === 'string' ? title : ''}>{typeof title !== 'string' && title}</h2>}
+  <slot />
+</section>
+
+<style>
+  section {
+    max-width: 700px;
+    margin: 0 auto 48px;
+  }
+
+  h2 {
+    margin-bottom: 8px;
+    font-weight: 700;
+    line-height: 1.5;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h2 i {
+    color: var(--primary);
+  }
+
+  @media (width <= 700px) {
+    section {
+      margin-bottom: 38px;
+    }
+  }
+
+  .section {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+</style>
