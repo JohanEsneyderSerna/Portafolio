@@ -6,8 +6,8 @@
              xmlns:cc="http://creativecommons.org/ns#">
       <cc:Work rdf:about="">
         <dc:title>JS Tech Consultant Logo</dc:title>
-        <dc:creator>Johan Esneider Serna</dc:creator>
-        <dc:rights>Copyright © 2024 Johan Esneider Serna. All rights reserved.</dc:rights>
+            <dc:creator>Johan Esneyder Serna</dc:creator>
+    <dc:rights>Copyright © 2024 Johan Esneyder Serna. All rights reserved.</dc:rights>
         <dc:date>2024</dc:date>
         <cc:license>Private use only - All rights reserved</cc:license>
       </cc:Work>
@@ -60,6 +60,6 @@
   
   <!-- Texto de copyright actualizado -->
   <text x="50%" y="50%" font-size="8" fill="url(#accentGradient)" fill-opacity="0.1" text-anchor="middle">
-    © 2024 Johan Esneider Serna
+    © 2024 Johan Esneyder Serna
   </text>
 </svg>
