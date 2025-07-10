@@ -4,10 +4,10 @@ import { getCVData } from "@utils/cv";
 const cvData = await getCVData();
 const { acreditation } = cvData;
 
-// Mapeo de acreditaciones usando rutas directas desde public/
+// Mapeo de acreditaciones usando rutas de PDFs con protección
 const acreditacionUrls = {
-  'Acreditacion-Windows-Server-2025': '/me/acreditaciones/Acreditacion-Windows-Server-2025.pdf',
-  'Acreditacion-Windows-11-Pro': '/me/acreditaciones/Acreditacion-Windows-11-Pro.pdf'
+  'Acreditacion-Windows-Server-2025': '/Portafolio/acreditaciones/Acreditacion-Windows-Server-2025.pdf',
+  'Acreditacion-Windows-11-Pro': '/Portafolio/acreditaciones/Acreditacion-Windows-11-Pro.pdf'
 };
 
 // Mapeo de información de acreditaciones
