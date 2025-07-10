@@ -181,13 +181,13 @@
       "name":"Acreditacion-Windows-Server-2025",
       "date":"2024-02-22",
       "issuer":"Expert Zone",
-      "url":"/me/public/acreditaciones/Acreditacion-Windows-Server-2025.pdf"
+      "url":"/me/acreditaciones/Acreditacion-Windows-Server-2025.pdf"
     },
     {
       "name":"Acreditacion-Windows-11-Pro",
       "date":"2024-03-10",
       "issuer":"Expert Zone",
-      "url":"/me/public/acreditaciones/Acreditacion-Windows-11-Pro.pdf"
+      "url":"/me/acreditaciones/Acreditacion-Windows-11-Pro.pdf"
     }
   ],
   "skills":[
