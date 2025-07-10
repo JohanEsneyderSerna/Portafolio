@@ -20,7 +20,7 @@ const escapedName = name.replace(/'/g, "\\'");
 <div class="card acreditacion-card" data-acreditacion-name="{name}" data-acreditacion-url="{url}">
   <div class="card-content acreditacion-card-content">
     <div class="card-header acreditacion-header">
-      <h3>{name}</h3>
+      <h3>{name.replace(/-/g, ' ').replace(/Acreditacion/g, 'Acreditación')}</h3>
       <CompactYearBadge startYear={year} endYear={year} showIcon={true} />
     </div>
     <p class="card-description acreditacion-issuer">

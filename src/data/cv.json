@@ -160,7 +160,7 @@
     {
       "name":"Certified Professional: Kaspersky Next EDR Foundations (046.12.5)",
       "date":"2021-08-22",
-      "issuer":"Scrum.org",
+      "issuer":"Kaspersky",
       "url":"https://cloud.kaspersky.com/?landing=true"
     },
     {
@@ -178,16 +178,16 @@
   ],
   "acreditation":[
     {
-      "name":"Acreditación Windows Server 2025",
+      "name":"Acreditacion-Windows-Server-2025",
       "date":"2024-02-22",
       "issuer":"Expert Zone",
-      "url":"https://expertzone.microsoft.com/"
+      "url":"/me/public/acreditaciones/Acreditacion-Windows-Server-2025.pdf"
     },
     {
-      "name":"Acreditación Windows 11 Pro",
+      "name":"Acreditacion-Windows-11-Pro",
       "date":"2024-03-10",
       "issuer":"Expert Zone",
-      "url":"https://expertzone.microsoft.com/"
+      "url":"/me/public/acreditaciones/Acreditacion-Windows-11-Pro.pdf"
     }
   ],
   "skills":[
