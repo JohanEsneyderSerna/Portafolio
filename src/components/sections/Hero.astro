@@ -94,7 +94,7 @@ const printInfo = [email, phone, linkedUrl].filter(Boolean).join(" • ")
       </a>
       <div class="contact-value-container">
         <a href="https://www.google.com/maps?q=6.299806,-75.535111" class="contact-value" target="_blank" rel="noopener noreferrer">
-          {city}, {department}, {region}
+          {city && region ? `${city}, ${region}` : city || region}
         </a>
         <button class="copy-button" onclick={`copyToClipboard('https://www.google.com/maps?q=6.299806,-75.535111')`} title="Copiar ubicación">
           <i class="fas fa-copy"></i>
