@@ -44,4 +44,4 @@ En mis empleos anteriores me he destacado por mi **productividad** y por **apren
 
 - 📧 Email: [Esneidergil99@gmail.com](mailto:Esneidergil99@gmail.com)
 - 📱 LinkedIn: [Johan Esneyder Serna](#)
-- 🌐 GitHub: [@Thelele99](https://github.com/Thelele99)
+- 🌐 GitHub: [@Johan Esneyder Serna](https://github.com/JohanEsneyderSerna)
