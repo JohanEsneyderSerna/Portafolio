@@ -2,17 +2,17 @@
   "basics":{
     "name":"Johan Esneyder Serna",
     "label":"Consultor de Tecnología",
-    "image":"/Portafolio/me.webp",
+    "image":"/portafolio/me.webp",
     "email":"Esneidergil99@gmail.com",
     "phone":"+57 300 123 4567",
-    "url":"https://johanesneyderserna.github.io/Portafolio",
+    "url":"https://johanesneyderserna.github.io/portafolio",
     "summary":"Soy una persona responsable, puntual, creativa y con muy buena disposición para cualquier tarea que se me asigne. Tengo 5 años de experiencia laboral en el área de TI. Me interesa principalmente trabajar en proyectos con un nivel de innovación alto y enfoque social. Soy comunicativo, amable y capaz de adaptarme a cada situación. En mis empleos anteriores me he destacado por mi productividad y por aprender rápidamente.",
     "location":{
-      "address":"Bogotá, Colombia",
-      "postalCode":"110111",
-      "city":"Bogotá",
+      "address":"Medellín, Colombia",
+      "postalCode":"050001",
+      "city":"Medellín",
       "countryCode":"CO",
-      "region":"Cundinamarca"
+      "region":"Antioquia"
     },
     "profiles":[
       {
@@ -175,13 +175,13 @@
       "name":"Acreditacion-Windows-Server-2025",
       "date":"2024-02-22",
       "issuer":"Expert Zone",
-      "url":"/Portafolio/acreditaciones/Acreditacion-Windows-Server-2025.pdf"
+      "url":"/portafolio/acreditaciones/Acreditacion-Windows-Server-2025.pdf"
     },
     {
       "name":"Acreditacion-Windows-11-Pro",
       "date":"2024-03-10",
       "issuer":"Expert Zone",
-      "url":"/Portafolio/acreditaciones/Acreditacion-Windows-11-Pro.pdf"
+      "url":"/portafolio/acreditaciones/Acreditacion-Windows-11-Pro.pdf"
     }
   ],
   "skills":[
